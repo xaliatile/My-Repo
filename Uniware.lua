@@ -8,9 +8,12 @@ local teleCheck = false
 local DefaultKeybind = "LeftAlt"
 
 Players.LocalPlayer.OnTeleport:Connect(function(State)
-	if keepUniware and (not teleCheck) and queueteleport then
+	if keepUniware and (not teleCheck) and queue_on_teleport then
 		teleCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
+		queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/xaliatile/Uniware/refs/heads/main/Uniware.lua"))()')
+    elseif keepUniware and (not teleCheck) and queueteleport then
+        teleCheck = true
+        queueteleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/xaliatile/Uniware/refs/heads/main/Uniware.lua"))()')
 	end
 end)
 
@@ -74,7 +77,16 @@ local KeepUni = UniversalSection:NewToggle({
     Description = "every time you serverhop or rejoin it will automatically load for you.",
     CurrentState = true,
     Callback = function(value)
-        keepUniware = value
+        if queueteleport or queue_on_teleport then
+            keepUniware = value
+            print(keepUniware)
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Notice",
+				Text = "Your executor does not support: queue_on_teleport() cannot execute.",
+                Duration = 3
+			})
+        end
     end,
 })
 
