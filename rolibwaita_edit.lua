@@ -326,6 +326,8 @@ function rolibwaita:NewWindow(WindowOptions: WindowOptions)
 	function window:Edit(NewOptions)
 		if NewOptions.Name == nil then
 			error("Required setting 'Name' not given")
+		else
+			
 		end
 
 		if NewOptions.Keybind == nil then
@@ -337,9 +339,9 @@ function rolibwaita:NewWindow(WindowOptions: WindowOptions)
 			print("Created By Blukez, Inspired By GNOME.")
 			print("Contributions:")
 			print("RealPacket | refactoring")
+		else
+			
 		end
-
-		title.Text = NewOptions.Name
 	end
 
 	function window:NewTab(TabOptions: TabOptions) -- tab
