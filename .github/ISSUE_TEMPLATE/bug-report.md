@@ -1,12 +1,10 @@
 ---
 name: Bug Report
-about: 'Please be clear and have your report contain as much detail as possible, for
-  example: **My UI keeps duplicating, I''m using (executor name) and this is the version
-  I''m using: (version of uniware)**'
+about: Report any bugs you find here
 title: Bug
 labels: bug
 assignees: ''
 
 ---
 
-* Bug Report *
+Please be clear and have your report contain as much detail as possible, for example: **My UI keeps duplicating, I'm using (executor name), and this is the version. Make sure you are using the latest version of Uniware.
