@@ -324,12 +324,6 @@ function rolibwaita:NewWindow(WindowOptions: WindowOptions)
 	end
 	
 	function window:Edit(NewOptions)
-		if NewOptions.Name == nil then
-			error("Required setting 'Name' not given")
-		else
-			
-		end
-
 		if NewOptions.Keybind == nil then
 			error("Required setting 'Keybind' not given")
 		end
