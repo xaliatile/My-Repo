@@ -311,18 +311,37 @@ function rolibwaita:NewWindow(WindowOptions: WindowOptions)
 
 	local firstTab = true
 	local window = {}
-	
+
 	function window:Remove()
 		createTween(closeButton, TweenPresets.Fast, { BackgroundColor3 = Color3.fromRGB(60, 60, 60) })
 		task.wait(0.2)
 		hideGUI()
-		
+
 		do
 			task.wait(1)
 			guiClone:Destroy()
 		end
 	end
 	
+	function window:Edit(NewOptions)
+		if NewOptions.Name == nil then
+			error("Required setting 'Name' not given")
+		end
+
+		if NewOptions.Keybind == nil then
+			error("Required setting 'Keybind' not given")
+		end
+
+		if NewOptions.PrintCredits then
+			print("Roblibwaita: Roblox User Interface Library.")
+			print("Created By Blukez, Inspired By GNOME.")
+			print("Contributions:")
+			print("RealPacket | refactoring")
+		end
+
+		title.Text = NewOptions.Name
+	end
+
 	function window:NewTab(TabOptions: TabOptions) -- tab
 		local tabClone = Examples.Tab:Clone()
 		local tabButtonClone = Examples.TabButton:Clone()
