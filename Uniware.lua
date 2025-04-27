@@ -1,13 +1,53 @@
 local Players = game:GetService("Players")
 
-local lib = loadstring(game:HttpGet("https://codeberg.org/Blukez/rolibwaita/raw/branch/master/Source.lua"))()
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/xaliatile/Uniware/refs/heads/main/rolibwaita_edit.lua"))()
 
-local canUseGethui = true
-local keepUniware = true
+if _G.Uniware then _G.Uniware:Remove() end
+
+local version = "v1.12.1"
+
+local keepUniware =true
 local teleCheck = false
 local DefaultKeybind = "LeftAlt"
 
+local dir = makefolder("Uniware")
+
+local function loadData()
+    if isfolder("Uniware") and isfile("Uniware/config.Uni") then
+        local config = readfile("Uniware/config.Uni")
+        config = game:GetService("HttpService"):JSONDecode(config)
+
+        keepUniware = config.keepUniware
+        DefaultKeybind = config.DefaultKeybind
+    else
+        if isfolder("Uniware") == false then
+            dir = makefolder("Uniware")
+        end
+
+        local config = writefile("Uniware/config.Uni", game:GetService("HttpService"):JSONEncode({
+            ["keepUniware"] = tostring(keepUniware),
+            ["DefaultKeybind"] = DefaultKeybind
+        }))
+
+        config = game:GetService("HttpService"):JSONDecode(readfile("Uniware/config.Uni"))
+
+        keepUniware = config.keepUniware
+        DefaultKeybind = config.DefaultKeybind
+    end
+end
+
+local function saveData()
+    local config = writefile("Uniware/config.Uni", game:GetService("HttpService"):JSONEncode({
+        ["keepUniware"] = tostring(keepUniware),
+        ["DefaultKeybind"] = DefaultKeybind
+    }))
+end
+
+loadData()
+
 Players.LocalPlayer.OnTeleport:Connect(function(State)
+    saveData()
+
 	if keepUniware and (not teleCheck) and queue_on_teleport then
 		teleCheck = true
 		queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/xaliatile/Uniware/refs/heads/main/Uniware.lua"))()')
@@ -17,18 +57,22 @@ Players.LocalPlayer.OnTeleport:Connect(function(State)
 	end
 end)
 
-if gethui then
-   canUseGethui = true
-else
-   canUseGethui = false
-end
+Players.PlayerRemoving:Connect(function(Player)
+    if Player == Players.LocalPlayer then
+        saveData()
+
+        return nil
+    end
+end)
 
 local Window = lib:NewWindow({
     Name = "Uniware",
     Keybind = DefaultKeybind,
-    UseCoreGui = canUseGethui,
+    UseCoreGui = true,
     PrintCredits = true
 })
+
+_G.Uniware = Window
 
 local UniversalTab = Window:NewTab({
     Name = "Universal",
@@ -63,7 +107,17 @@ local Executor = UniversalSection:NewTextBox({
     end,
 })
 
-local UnD = UniversalSection:NewToggle({
+local MiscellaneousTab = Window:NewTab({
+    Name = "Miscellaneous",
+    Icon = "rbxassetid://11419704343"
+})
+
+local MiscellaneousSection = MiscellaneousTab:NewSection({
+    Name = "Miscellaneous",
+    Description = "self explanatory.",
+})
+
+local UnD = MiscellaneousSection:NewToggle({
     Name = "Undetectable", 
     Description = "Makes it very difficult for anti-cheats to detect you.",
     CurrentState = true,
@@ -72,14 +126,23 @@ local UnD = UniversalSection:NewToggle({
     end,
 })
 
-local KeepUni = UniversalSection:NewToggle({
-    Name = "Keep Uni", 
-    Description = "every time you serverhop or rejoin it will automatically load for you.",
-    CurrentState = true,
+local SettingsTab = Window:NewTab({
+    Name = "Settings",
+    Icon = "rbxassetid://11293977610"
+})
+
+local SettingsSection = SettingsTab:NewSection({
+    Name = "Settings",
+    Description = "UI settings.",
+})
+
+local KeepUni = SettingsSection:NewToggle({
+    Name = "Keep Uniware", 
+    Description = "every time you serverhop or rejoin it will automatically reload for you.",
+    CurrentState = keepUniware,
     Callback = function(value)
         if queueteleport or queue_on_teleport then
             keepUniware = value
-            print(keepUniware)
         else
             game:GetService("StarterGui"):SetCore("SendNotification", {
 				Title = "Notice",
@@ -90,7 +153,18 @@ local KeepUni = UniversalSection:NewToggle({
     end,
 })
 
-local MiscellaneousTab = Window:NewTab({
-    Name = "Miscellaneous",
-    Icon = "rbxassetid://11419704343"
+
+local Keybinds = SettingsSection:NewDropdown({
+    Name = "UI Keybinds",
+    Description = "the keybinds to toggle the ui for.", 
+    Choices = {"LeftControl", "LeftAlt", "LeftShift", "RightControl", "RightAlt", "RightShift"},
+    CurrentState = "LeftAlt",
+    Callback = function(value) 
+        DefaultKeybind = value
+
+        Window:Edit({
+            Keybind = DefaultKeybind,
+            Name = "Uniware"
+        })
+    end,
 })
